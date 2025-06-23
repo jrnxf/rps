@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Confetti from 'react-confetti'
 import { useWindowSize } from 'react-use'
 
@@ -140,14 +140,9 @@ function RpsGame() {
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
 
-      const activeTypes = Object.values(newCounts).filter(
-        (count) => count > 0,
-      ).length
-      const effectiveSpeed = activeTypes === 2 ? 0.2 : speedRef.current
-
       for (const entity of entities) {
-        entity.x += entity.vx * effectiveSpeed
-        entity.y += entity.vy * effectiveSpeed
+        entity.x += entity.vx * speedRef.current
+        entity.y += entity.vy * speedRef.current
 
         if (
           entity.x <= ENTITY_SIZE / 2 ||
@@ -307,46 +302,64 @@ function RpsGame() {
                 height={canvasHeight}
                 className="game-canvas"
               />
-              <div className="controls">
-                <button onClick={fullReset}>Reset Game</button>
-                <label>
-                  Speed:
-                  <input
-                    type="range"
-                    min="0.1"
-                    max="5"
-                    step="0.1"
-                    value={speed}
-                    onChange={(e) => setSpeed(Number(e.target.value))}
-                  />
-                </label>
-              </div>
             </>
           )
         })()}
       </div>
       <div className="stats-container">
-        <h2>Round Scores</h2>
-        <p>
-          🪨 Rock: <span>{roundScores.rock}</span>
-        </p>
-        <p>
-          📄 Paper: <span>{roundScores.paper}</span>
-        </p>
-        <p>
-          ✂️ Scissors: <span>{roundScores.scissors}</span>
-        </p>
-        <hr />
-        <h2>Live Counts</h2>
-        <p>
-          🪨 Rock: <span>{counts.rock}</span>
-        </p>
-        <p>
-          📄 Paper: <span>{counts.paper}</span>
-        </p>
-        <p>
-          ✂️ Scissors: <span>{counts.scissors}</span>
-        </p>
+        <div className="sidebar-content">
+          <h2>Round Scores</h2>
+          <div className="stat-row">
+            <span>🪨</span>
+            <span>Rock:</span>
+            <span>{roundScores.rock}</span>
+          </div>
+          <div className="stat-row">
+            <span>📄</span>
+            <span>Paper:</span>
+            <span>{roundScores.paper}</span>
+          </div>
+          <div className="stat-row">
+            <span>✂️</span>
+            <span>Scissors:</span>
+            <span>{roundScores.scissors}</span>
+          </div>
+          <hr />
+          <h2>Live Counts</h2>
+          <div className="stat-row">
+            <span>🪨</span>
+            <span>Rock:</span>
+            <span>{counts.rock}</span>
+          </div>
+          <div className="stat-row">
+            <span>📄</span>
+            <span>Paper:</span>
+            <span>{counts.paper}</span>
+          </div>
+          <div className="stat-row">
+            <span>✂️</span>
+            <span>Scissors:</span>
+            <span>{counts.scissors}</span>
+          </div>
+          <hr />
+          <h2>Controls</h2>
+          <div className="controls">
+            <label>
+              Speed
+              <input
+                type="range"
+                min="0.1"
+                max="5"
+                step="0.1"
+                value={speed}
+                onChange={(e) => setSpeed(Number(e.target.value))}
+              />
+            </label>
+          </div>
+        </div>
+        <button onClick={fullReset} className="reset-button">
+          Reset Game
+        </button>
       </div>
     </div>
   )

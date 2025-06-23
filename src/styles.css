@@ -40,7 +40,7 @@ code {
 
 .game-canvas {
   display: block;
-  border: 1px solid #61dafb;
+  border: 1px solid #333;
   background-color: #fff;
 }
 
@@ -91,52 +91,96 @@ code {
 }
 
 .controls {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
   display: flex;
+  flex-direction: column;
   gap: 15px;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 8px 15px;
-  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 button {
-  background-color: #61dafb;
-  border: none;
-  color: #282c34;
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  color: #eee;
   padding: 8px 12px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 14px;
-  margin: 4px 2px;
+  margin: 0;
   cursor: pointer;
   border-radius: 8px;
   font-weight: bold;
   letter-spacing: 0.05em;
+  transition: background-color 0.2s;
+  width: 120px;
+  background: transparent;
+}
+
+button:hover {
+  background-color: #3a3a3a;
 }
 
 input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
   cursor: pointer;
   width: 120px;
+  background: transparent;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: #444;
+  border-radius: 4px;
+}
+
+input[type='range']::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  background: #444;
+  border-radius: 4px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -6px;
+  width: 16px;
+  height: 16px;
+  background: #eee;
+  border-radius: 50%;
+  border: 1px solid #555;
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #eee;
+  border-radius: 50%;
+  border: 1px solid #555;
 }
 
 .stats-container {
-  background-color: #1a1a1a;
-  padding: 20px;
+  background: linear-gradient(to bottom, #1c1c1c, #000);
+  padding: 20px 35px;
   width: 220px;
   flex-shrink: 0;
-  border-left: 1px solid #61dafb;
+  border-left: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .stats-container h2 {
   margin-top: 0;
   text-align: center;
-  border-bottom: 1px solid #61dafb;
+  border-bottom: 1px solid #333;
   padding-bottom: 10px;
   letter-spacing: 0.1em;
 }
@@ -148,8 +192,30 @@ input[type='range'] {
   margin: 15px 0;
 }
 
+.stat-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1em;
+  align-items: center;
+  font-size: 1.1em;
+  margin: 15px 0;
+}
+
+.stat-row span:last-child {
+  font-variant-numeric: tabular-nums;
+  justify-self: end;
+}
+
 .stats-container hr {
   border: none;
-  border-top: 1px solid #61dafb;
+  border-top: 1px solid #333;
   margin: 20px 0;
+}
+
+.sidebar-content {
+  /* Takes up all available space, pushing reset button down */
+}
+
+.reset-button {
+  width: 100%;
 }
