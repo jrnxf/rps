@@ -31,17 +31,49 @@ type Entity = {
 
 function createEntities(width: number, height: number): Array<Entity> {
   const newEntities: Array<Entity> = []
-  let id = 0
+  const totalEntities = ENTITY_COUNT_PER_TYPE * TYPES.length
+
+  if (width <= 0 || height <= 0) {
+    return []
+  }
+
+  const ratio = width / height
+  const rows = Math.ceil(Math.sqrt(totalEntities / ratio))
+  const cols = Math.ceil(totalEntities / rows)
+
+  const cellWidth = width / cols
+  const cellHeight = height / rows
+
+  const allTypes: Array<EntityType> = []
   for (const type of TYPES) {
     for (let i = 0; i < ENTITY_COUNT_PER_TYPE; i++) {
-      newEntities.push({
-        id: id++,
-        x: Math.random() * (width - ENTITY_SIZE) + ENTITY_SIZE / 2,
-        y: Math.random() * (height - ENTITY_SIZE) + ENTITY_SIZE / 2,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
-        type: type,
-      })
+      allTypes.push(type)
+    }
+  }
+
+  // Shuffle the types so they are placed randomly
+  for (let i = allTypes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[allTypes[i], allTypes[j]] = [allTypes[j], allTypes[i]]
+  }
+
+  let entityIndex = 0
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (entityIndex < totalEntities) {
+        const jitterX = (Math.random() - 0.5) * (cellWidth - ENTITY_SIZE)
+        const jitterY = (Math.random() - 0.5) * (cellHeight - ENTITY_SIZE)
+
+        newEntities.push({
+          id: entityIndex,
+          x: c * cellWidth + cellWidth / 2 + jitterX,
+          y: r * cellHeight + cellHeight / 2 + jitterY,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          type: allTypes[entityIndex],
+        })
+        entityIndex++
+      }
     }
   }
   return newEntities
@@ -256,6 +288,38 @@ function RpsGame() {
     return type2
   }
 
+  let mainGameContent
+  if (ultimateWinner) {
+    mainGameContent = (
+      <div className="game-over">
+        <h1>SERIES COMPLETE!</h1>
+        <h2>
+          {EMOJIS[ultimateWinner]} {ultimateWinner} wins the best of 7!
+        </h2>
+        <button onClick={fullReset}>Play Again</button>
+      </div>
+    )
+  } else if (roundWinner) {
+    mainGameContent = (
+      <div className="game-over">
+        <h1>Round Over!</h1>
+        <p>
+          The winner is {EMOJIS[roundWinner]} {roundWinner}!
+        </p>
+        <p className="next-round-timer">Starting next round soon...</p>
+      </div>
+    )
+  } else {
+    mainGameContent = (
+      <canvas
+        ref={canvasRef}
+        width={canvasWidth}
+        height={canvasHeight}
+        className="game-canvas"
+      />
+    )
+  }
+
   return (
     <div className="game-wrapper">
       {roundWinner && !ultimateWinner && (
@@ -267,45 +331,7 @@ function RpsGame() {
           recycle={false}
         />
       )}
-      <div className="main-game-area">
-        {(() => {
-          if (ultimateWinner) {
-            return (
-              <div className="game-over">
-                <h1>SERIES COMPLETE!</h1>
-                <h2>
-                  {EMOJIS[ultimateWinner]} {ultimateWinner} wins the best of 7!
-                </h2>
-                <button onClick={fullReset}>Play Again</button>
-              </div>
-            )
-          }
-
-          if (roundWinner) {
-            return (
-              <div className="game-over">
-                <h1>Round Over!</h1>
-                <p>
-                  The winner is {EMOJIS[roundWinner]} {roundWinner}!
-                </p>
-                <p className="next-round-timer">Starting next round soon...</p>
-              </div>
-            )
-          }
-
-          return (
-            <>
-              <h1>Rock Paper Scissors Simulation</h1>
-              <canvas
-                ref={canvasRef}
-                width={canvasWidth}
-                height={canvasHeight}
-                className="game-canvas"
-              />
-            </>
-          )
-        })()}
-      </div>
+      <div className="main-game-area">{mainGameContent}</div>
       <div className="stats-container">
         <div className="sidebar-content">
           <h2>Round Scores</h2>
